@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Blood - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .request-form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-section h3 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--bg-light);
+            color: var(--secondary);
+            font-size: 1.25rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .urgency-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .urgency-option {
+            border: 2px solid var(--border);
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .urgency-option.active {
+            border-color: var(--secondary);
+            background: var(--secondary-light);
+            color: var(--secondary-dark);
+        }
+
+        .urgency-option[data-urgency="Immediate"].active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            background: var(--bg-light);
+        }
+
+        /* MATCHING RESULTS MODAL STYLING */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem 1rem 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .matching-steps {
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            animation: stepSlideIn 0.5s ease-out backwards;
+        }
+
+        @keyframes stepSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .step:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .step:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .step:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .step:nth-child(4) {
+            animation-delay: 0.7s;
+        }
+
+        .step-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .step.active .step-icon {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .step-content h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--secondary);
+        }
+
+        .step-content p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .step-1 .step-icon {
+            background: #3498db;
+        }
+
+        .step-2 .step-icon {
+            background: #2ecc71;
+        }
+
+        .step-3 .step-icon {
+            background: #f39c12;
+        }
+
+        .step-4 .step-icon {
+            background: #e74c3c;
+        }
+
+        .donors-found {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-top: 2rem;
+        }
+
+        .donors-found h3 {
+            margin-top: 0;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .donor-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            animation: donorSlideIn 0.5s ease-out backwards;
+        }
+
+        @keyframes donorSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .donor-card:nth-child(1) {
+            animation-delay: 1.2s;
+        }
+
+        .donor-card:nth-child(2) {
+            animation-delay: 1.4s;
+        }
+
+        .donor-card:nth-child(3) {
+            animation-delay: 1.6s;
+        }
+
+        .donor-card:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .donor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .donor-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .donor-match-score {
+            background: #2ecc71;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .donor-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .donor-info-item {
+            display: flex;
+            gap: 0.5rem;
+            align-items: start;
+        }
+
+        .donor-info-item i {
+            color: var(--secondary);
+            margin-top: 0.2rem;
+        }
+
+        .contact-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .contact-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-confirm {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            opacity: 0.9;
+        }
+
+        .btn-modify {
+            background: var(--bg-light);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-modify:hover {
+            border-color: var(--secondary);
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+</head>
+
+<body class="recipient-theme">
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon"></span>
+    </button>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo" style="text-decoration: none;">
+                <i class="fas fa-heartbeat logo-heartbeat"></i>
+                <span>BloodConnect</span>
+            </a>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard-recipient.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="request-blood.html" class="active"><i class="fas fa-plus-circle"></i> New Request</a></li>
+                <li><a href="my-requests.html"><i class="fas fa-list-ul"></i> My Requests</a></li>
+                <li><a href="receipts-recipient.html"><i class="fas fa-file-invoice"></i> Receipts</a></li>
+                <li><a href="emergency-broadcast.html" style="color: #ef4444;"><i class="fas fa-broadcast-tower"></i>
+                        Emergency</a></li>
+                <li><a href="settings-recipient.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <a href="#" onclick="App.logout()"
+                style="color: #ef4444; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin-top: auto;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="request-form-container card">
+                <div style="text-align: center; margin-bottom: 2.5rem;">
+                    <h2 style="font-size: 2.25rem;">New Blood Request</h2>
+                    <p style="color: var(--text-muted);">Please provide patient and requirement details accurately</p>
+                </div>
+
+                <form id="bloodRequestForm">
+                    <!-- Patient Info -->
+                    <div class="form-section">
+                        <h3>Patient Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Patient Name</label>
+                                <input type="text" id="patientName" required placeholder="Full Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Patient ID (Optional)</label>
+                                <input type="text" id="patientId" placeholder="HOSP-12345">
+                            </div>
+                            <div class="form-group">
+                                <label>Age</label>
+                                <input type="number" id="age" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Medical Condition</label>
+                                <input type="text" id="condition" placeholder="e.g. Surgery, Anemia">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Blood Requirement -->
+                    <div class="form-section">
+                        <h3>Blood Requirement</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Blood Group Needed</label>
+                                <select id="bloodGroup" required>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Units Needed</label>
+                                <input type="number" id="units" value="1" min="1" max="10" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Urgency Level</label>
+                                <div class="urgency-selector">
+                                    <div class="urgency-option" data-urgency="Immediate">Immediate</div>
+                                    <div class="urgency-option active" data-urgency="High">High</div>
+                                    <div class="urgency-option" data-urgency="Medium">Medium</div>
+                                    <div class="urgency-option" data-urgency="Low">Low</div>
+                                </div>
+                                <input type="hidden" id="urgency" value="High">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-section">
+                        <h3>Location Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Location Type</label>
+                                <select id="locationType">
+                                    <option value="hospital">Hospital</option>
+                                    <option value="lab">Lab</option>
+                                    <option value="home">Home</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Hospital/Facility Name</label>
+                                <input type="text" id="hospitalName" placeholder="e.g. PIMS Hospital">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Contact Phone</label>
+                                <input type="tel" id="contactPhone" required placeholder="+92-300-1234567">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                        <button type="submit" class="btn-primary"
+                            style="flex: 2; background: var(--secondary); justify-content: center;">
+                            Submit Request & Find Donor
+                        </button>
+                        <button type="button" class="btn-secondary" style="flex: 1; justify-content: center;"
+                            onclick="history.back()">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- MATCHING RESULTS MODAL - Well-designed popup for showing matching process -->
+    <div class="modal-overlay" id="matchingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-heart" style="color: #ff6b6b; margin-right: 0.5rem;"></i>Matching Results</h2>
+                <button class="modal-close" onclick="closeMatchingModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- MATCHING PROCESS STEPS - Animated visualization -->
+                <div class="matching-steps">
+                    <h3 style="color: var(--secondary); margin-bottom: 1.5rem;">🔍 Matching Process</h3>
+
+                    <div class="step step-1">
+                        <div class="step-icon">1</div>
+                        <div class="step-content">
+                            <h4>Request Analyzed</h4>
+                            <p id="step1Text">Checking blood group and urgency level...</p>
+                        </div>
+                    </div>
+
+                    <div class="step step-2">
+                        <div class="step-icon">2</div>
+                        <div class="step-content">
+                            <h4>Donor Search</h4>
+                            <p id="step2Text">Searching compatible donors in database...</p>
+                        </div>
+                    </div>
+
+                    <div class="step step-3">
+                        <div class="step-icon">3</div>
+                        <div class="step-content">
+                            <h4>Location Match</h4>
+                            <p id="step3Text">Finding nearest donors using Dijkstra algorithm...</p>
+                        </div>
+                    </div>
+
+                    <div class="step step-4">
+                        <div class="step-icon">4</div>
+                        <div class="step-content">
+                            <h4>Results Ready</h4>
+                            <p id="step4Text">Compatible donors found and ranked!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DONORS FOUND SECTION - Display matched donors -->
+                <div class="donors-found">
+                    <h3><i class="fas fa-check-circle" style="color: #2ecc71;"></i> Available Donors</h3>
+                    <div id="donorsList"></div>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="modal-actions">
+                    <button class="btn-confirm" onclick="confirmRequest()">
+                        <i class="fas fa-check"></i> Confirm Request
+                    </button>
+                    <button class="btn-modify" onclick="modifyRequest()">
+                        <i class="fas fa-edit"></i> Modify Request
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // ================= URGENCY SELECTION LOGIC =================
+        const options = document.querySelectorAll('.urgency-option');
+        options.forEach(opt => {
+            opt.addEventListener('click', () => {
+                options.forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                document.getElementById('urgency').value = opt.dataset.urgency;
+            });
+        });
+
+        // ================= BLOOD COMPATIBILITY CHECKER =================
+        // Check karta hai k konsa blood group donate ho sakta hai
+        function canDonate(donorBlood, recipientBlood) {
+            // Universal donor O- sab ko de sakta hai
+            if (donorBlood === 'O-') return true;
+            // Universal recipient AB+ sab se le sakta hai
+            if (recipientBlood === 'AB+') return true;
+            // Same blood group always compatible
+            if (donorBlood === recipientBlood) return true;
+
+            // Rh factor compatible check
+            const donorRh = donorBlood.includes('+') ? '+' : '-';
+            const recipientRh = recipientBlood.includes('+') ? '+' : '-';
+
+            // ABO group compatibility
+            const compatibility = {
+                'A': ['A', 'AB'],
+                'B': ['B', 'AB'],
+                'AB': ['AB'],
+                'O': ['O', 'A', 'B', 'AB']
+            };
+
+            const donorGroup = donorBlood[0];
+            const recipientGroup = recipientBlood[0];
+
+            if (compatibility[donorGroup] && compatibility[donorGroup].includes(recipientGroup)) {
+                // If recipient is Rh+, donor can be both + and -
+                // If recipient is Rh-, donor must be -
+                return recipientRh === '+' || donorRh === '-';
+            }
+            return false;
+        }
+
+        // ================= MOCK DONOR DATABASE =================
+        // Demo data - Real system main backend se aata hai
+        const allDonors = [
+            { id: 'D001', name: 'Ahmed Khan', blood: 'O+', city: 'Islamabad', area: 'F-8', distance: 5, phone: '0300-1234567', lastDonation: '2 months ago' },
+            { id: 'D002', name: 'Eman Ali', blood: 'A+', city: 'Islamabad', area: 'DHA', distance: 8, phone: '0300-2345678', lastDonation: '3 months ago' },
+            { id: 'D003', name: 'Hassan Raza', blood: 'B+', city: 'Islamabad', area: '9th Avenue', distance: 12, phone: '0300-3456789', lastDonation: '1 month ago' },
+            { id: 'D004', name: 'Fatima Ahmad', blood: 'AB+', city: 'Islamabad', area: '9th Avenue', distance: 15, phone: '0300-4567890', lastDonation: '4 months ago' },
+            { id: 'D005', name: 'Ali Hassan', blood: 'O-', city: 'Islamabad', area: 'North Islamabad', distance: 20, phone: '0300-5678901', lastDonation: '5 months ago' }
+        ];
+
+        // ================= MATCHING ALGORITHM =================
+        // Compatible donors find karte hain aur rank karte hain
+        function findMatchingDonors(bloodGroupNeeded, urgency) {
+            // Filter compatible donors
+            const matched = allDonors.filter(donor => {
+                return canDonate(donor.blood, bloodGroupNeeded);
+            });
+
+            // Rank by multiple factors - distance, urgency, recent donation
+            const ranked = matched.map(donor => {
+                let score = 100;
+
+                // Distance factor - nearest donors ko priority (Dijkstra principle)
+                score -= donor.distance * 2;
+
+                // Urgency factor - for urgent requests, prefer recent donors
+                if (urgency === 'Immediate') {
+                    if (donor.lastDonation.includes('2 months')) score += 20;
+                    else if (donor.lastDonation.includes('3 months')) score += 10;
+                    else score -= 5;
+                }
+
+                return { ...donor, matchScore: Math.max(0, score) };
+            });
+
+            // Sort by score (descending)
+            return ranked.sort((a, b) => b.matchScore - a.matchScore).slice(0, 3);
+        }
+
+        // ================= FORM SUBMISSION HANDLER =================
+        document.getElementById('bloodRequestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Collect form data - COMMENTED: Data structure for request
+            const formData = {
+                patientName: document.getElementById('patientName').value,
+                patientId: document.getElementById('patientId').value,
+                age: parseInt(document.getElementById('age').value),
+                medicalCondition: document.getElementById('condition').value,
+                bloodGroupNeeded: document.getElementById('bloodGroup').value,
+                unitsNeeded: parseInt(document.getElementById('units').value),
+                urgency: document.getElementById('urgency').value,
+                locationType: document.getElementById('locationType').value,
+                hospitalName: document.getElementById('hospitalName').value,
+                contactPhone: document.getElementById('contactPhone').value,
+                locationNodeId: 'H1'
+            };
+
+            // ADDED: Show loading and find matching donors
+            App.showToast('🔍 Searching for compatible donors...', 'info');
+
+            // Simulate processing delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // ADDED: Find matching donors using compatibility algorithm
+            const matchedDonors = findMatchingDonors(
+                formData.bloodGroupNeeded,
+                formData.urgency
+            );
+
+            // ADDED: Store request data and show matching results modal
+            window.currentRequest = formData;
+            window.currentDonors = matchedDonors;
+            showMatchingResults(formData, matchedDonors);
+        });
+
+        // ================= DISPLAY MATCHING RESULTS MODAL =================
+        function showMatchingResults(request, donors) {
+            // Update matching process steps
+            document.getElementById('step1Text').textContent = `Blood group ${request.bloodGroupNeeded} - Urgency: ${request.urgency}`;
+            document.getElementById('step2Text').textContent = `Found ${donors.length} compatible donors in database`;
+            document.getElementById('step3Text').textContent = `Ranked by distance using shortest path algorithm`;
+            document.getElementById('step4Text').textContent = `${donors.length} donors ready to help!`;
+
+            // Display donor cards
+            const donorsList = document.getElementById('donorsList');
+            donorsList.innerHTML = donors.map((donor, index) => `
+                <div class="donor-card">
+                    <div class="donor-header">
+                        <div>
+                            <div class="donor-name"><i class="fas fa-user-circle"></i> ${donor.name}</div>
+                            <small style="color: var(--text-muted);">ID: ${donor.id}</small>
+                        </div>
+                        <div class="donor-match-score">${donor.matchScore}% Match</div>
+                    </div>
+                    <div class="donor-info">
+                        <div class="donor-info-item">
+                            <i class="fas fa-droplet"></i>
+                            <span><strong>Blood:</strong> ${donor.blood}</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span><strong>Location:</strong> ${donor.area}, ${donor.city}</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-road"></i>
+                            <span><strong>Distance:</strong> ${donor.distance} km</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-calendar"></i>
+                            <span><strong>Last Donation:</strong> ${donor.lastDonation}</span>
+                        </div>
+                    </div>
+                    <button class="contact-btn" onclick="contactDonor('${donor.id}', '${donor.name}', '${donor.phone}')">
+                        <i class="fas fa-phone"></i> Contact Donor
+                    </button>
+                </div>
+            `).join('');
+
+            // Show modal with animation
+            const modal = document.getElementById('matchingModal');
+            modal.classList.add('active');
+        }
+
+        // ================= CLOSE MATCHING MODAL =================
+        function closeMatchingModal() {
+            document.getElementById('matchingModal').classList.remove('active');
+        }
+
+        // ADDED: Confirm and proceed with request
+        function confirmRequest() {
+            if (!window.currentRequest) return;
+
+            App.showToast('✅ Request Confirmed! Contacting donors...', 'success');
+            closeMatchingModal();
+
+            // CHANGED: Save both request AND matched donors to localStorage
+            localStorage.setItem('current_active_request', JSON.stringify(window.currentRequest));
+            localStorage.setItem('current_donors', JSON.stringify(window.currentDonors)); // NEW: Save matched donors
+            setTimeout(() => window.location.href = 'live-match.html', 1000);
+        }
+
+        // ADDED: Modify request and go back to form
+        function modifyRequest() {
+            closeMatchingModal();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ADDED: Contact donor - Show contact options
+        function contactDonor(donorId, donorName, donorPhone) {
+            App.showToast(`📞 Contacting ${donorName}...`, 'info');
+            // Real system main backend se contact bhejega
+            alert(`Connecting with ${donorName}\nPhone: ${donorPhone}\n\nIn production, this would send an SMS notification.`);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('matchingModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeMatchingModal();
+            }
+        });
+    </script>
+</body>
+
+</html>

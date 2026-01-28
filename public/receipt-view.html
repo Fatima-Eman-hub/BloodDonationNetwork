@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Receipt - BloodConnect</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            padding: 4rem 1rem;
+        }
+
+        .receipt-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #e5e7eb;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            color: #DC2626;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .receipt-id {
+            font-family: monospace;
+            color: #6B7280;
+            font-size: 0.875rem;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .label {
+            color: #6B7280;
+            font-size: 0.875rem;
+        }
+
+        .value {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.75rem;
+            color: #9CA3AF;
+        }
+
+        .qr-placeholder {
+            width: 100px;
+            height: 100px;
+            background: #f3f4f6;
+            margin: 2rem auto;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: #9CA3AF;
+            text-align: center;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .receipt-card {
+                box-shadow: none;
+                border: 1px solid #e5e7eb;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+</head>
+
+<body>
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon"></span>
+    </button>
+    <div class="receipt-card">
+        <div class="receipt-header">
+            <div class="logo">BLOODCONNECT</div>
+            <div style="font-weight: 600; font-size: 1.25rem;">Official Donation Receipt</div>
+            <!-- DYNAMIC: Receipt ID loaded from receipt data -->
+            <div class="receipt-id" id="receiptIdDisplay">ID: RCPT-2024-12-15-001</div>
+        </div>
+
+        <div style="padding: 0 1rem;">
+            <div class="row">
+                <span class="label">Date</span>
+                <!-- DYNAMIC: Date from receipt data -->
+                <span class="value" id="dateDisplay">December 15, 2024</span>
+            </div>
+            <div class="row">
+                <span class="label">Time</span>
+                <span class="value" id="timeDisplay">14:30 PM</span>
+            </div>
+            <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 1.5rem 0;">
+            <div class="row">
+                <span class="label">Donor Name</span>
+                <!-- DYNAMIC: Donor name from receipt data -->
+                <span class="value" id="donorDisplay">Ahmed Khan</span>
+            </div>
+            <div class="row">
+                <span class="label">Blood Group</span>
+                <!-- DYNAMIC: Blood group from receipt data -->
+                <span class="value" id="bloodDisplay" style="color: #DC2626;">A Positive (A+)</span>
+            </div>
+            <div class="row">
+                <span class="label">Recipient Name</span>
+                <!-- DYNAMIC: Patient/recipient name from receipt data -->
+                <span class="value" id="patientDisplay">Sara Ahmed</span>
+            </div>
+            <div class="row">
+                <span class="label">Units Received</span>
+                <span class="value">1 Unit</span>
+            </div>
+            <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 1.5rem 0;">
+            <div class="row">
+                <span class="label">Facility</span>
+                <span class="value">Aga Khan Hospital</span>
+            </div>
+            <div class="row">
+                <span class="label">Location</span>
+                <span class="value">Rawalpindi, Pakistan</span>
+            </div>
+            <div class="row">
+                <span class="label">Distance Traveled</span>
+                <span class="value">5.2 km</span>
+            </div>
+        </div>
+
+        <div class="qr-placeholder">
+            SECURE VERIFICATION QR<br>AUT-A7B9C2
+        </div>
+
+        <div class="footer">
+            This is a computer-generated document. No signature required.<br>
+            Thank you for being a hero.
+        </div>
+
+        <div class="no-print" style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button onclick="window.print()"
+                style="flex: 1; padding: 0.75rem; background: #111827; color: white; border: none; border-radius: 0.5rem; cursor: pointer; font-weight: 600;">Print
+                Receipt</button>
+            <button onclick="history.back()"
+                style="flex: 1; padding: 0.75rem; background: white; border: 1px solid #d1d5db; border-radius: 0.5rem; cursor: pointer;">Go
+                Back</button>
+        </div>
+    </div>
+
+    <script>
+        // ADDED: Load receipt data from localStorage and display dynamically
+        window.addEventListener('DOMContentLoaded', () => {
+            const receiptData = JSON.parse(localStorage.getItem('current_receipt') || '{}');
+
+            // Update receipt display with actual data
+            if (receiptData.id) {
+                document.getElementById('receiptIdDisplay').textContent = 'ID: ' + receiptData.id;
+            }
+            if (receiptData.date) {
+                document.getElementById('dateDisplay').textContent = receiptData.date;
+            }
+            if (receiptData.donor) {
+                document.getElementById('donorDisplay').textContent = receiptData.donor;
+            }
+            if (receiptData.blood) {
+                document.getElementById('bloodDisplay').textContent = receiptData.blood + ' Positive (' + receiptData.blood + ')';
+            }
+            if (receiptData.patient) {
+                document.getElementById('patientDisplay').textContent = receiptData.patient;
+            }
+        });
+    </script>
+</body>
+
+</html>

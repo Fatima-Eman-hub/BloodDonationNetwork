@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Overview - Blood Donation Network</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card h2::before {
+            font-size: 1.5em;
+        }
+        
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .card li {
+            padding: 8px 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card li:last-child {
+            border-bottom: none;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .status.ok {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .flow-diagram {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        .endpoint {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .test-button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        
+        .test-button:hover {
+            background: #764ba2;
+        }
+        
+        .test-button:active {
+            transform: scale(0.98);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+        }
+        
+        tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .number { color: #bd93f9; }
+        
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 8px;
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon"></span>
+    </button>
+    <div class="container">
+        <h1>🩸 Blood Donation System - Complete Overview</h1>
+        
+        <!-- Quick Status -->
+        <div class="grid">
+            <div class="card">
+                <h2><span class="emoji">✅</span>System Status</h2>
+                <ul>
+                    <li><span class="status ok">Backend Running</span> Port 18080</li>
+                    <li><span class="status ok">Frontend Ready</span> HTML/JS</li>
+                    <li><span class="status ok">Data Persistent</span> CSV Files</li>
+                    <li><span class="status ok">User System</span> Active</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2><span class="emoji">🎯</span>Key Features</h2>
+                <ul>
+                    <li>✅ User Registration</li>
+                    <li>✅ Email + Password Login</li>
+                    <li>✅ User Separation (Unique ID)</li>
+                    <li>✅ CSV Data Persistence</li>
+                    <li>✅ Blood Type Matching</li>
+                    <li>✅ Distance Calculation</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2><span class="emoji">📊</span>Current Data</h2>
+                <ul>
+                    <li>Donors: <strong>3+ registered</strong></li>
+                    <li>Recipients: <strong>1+ requests</strong></li>
+                    <li>Transactions: <strong>In CSV</strong></li>
+                    <li>Storage: <strong>data/ folder</strong></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Architecture Section -->
+        <div class="section">
+            <h2><span class="emoji">🏗️</span>System Architecture</h2>
+            
+            <div class="flow-diagram">Frontend (Browser)
+  ├─ HTML Pages
+  ├─ JavaScript (app.js)
+  └─ localStorage (user session)
+         ↓
+    HTTP API (Port 18080)
+         ↓
+Backend (C++ Crow Server)
+  ├─ Route Handlers
+  ├─ Business Logic
+  └─ Data Validation
+         ↓
+   ┌─────┴──────┐
+   ↓            ↓
+RAM (Fast)   Disk (Persistent)
+├─ HashMap    ├─ donors.csv
+└─ Live Data  ├─ recipients.csv
+             └─ transactions.csv</div>
+        </div>
+        
+        <!-- Data Flow Section -->
+        <div class="section">
+            <h2><span class="emoji">🔄</span>Data Flow - Registration to Persistence</h2>
+            
+            <h3 style="margin-top: 20px; color: #333;">Complete Journey:</h3>
+            <div class="flow-diagram">1. User fills registration form
+   ↓
+2. Frontend: fetch() POST request
+   ↓
+3. Backend receives JSON data
+   ↓
+4. Create Donor/Recipient object
+   ↓
+5. Insert in CustomHashMap (RAM) - Fast Access
+   ↓
+6. Append to CSV file (data/donors.csv) - Persistent
+   ↓
+7. Browser receives response: {success: true, id: "DON-004"}
+   ↓
+8. Server restart → loadData() reads CSV
+   ↓
+9. All data reloaded into RAM ✅ PERSISTENT!</div>
+        </div>
+        
+        <!-- User Separation -->
+        <div class="section">
+            <h2><span class="emoji">👥</span>User Separation Mechanism</h2>
+            
+            <p style="margin-bottom: 15px;">Every user is identified by <strong>Email + Password + Unique ID</strong></p>
+            
+            <table>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Unique ID</th>
+                    <th>Data Access</th>
+                </tr>
+                <tr>
+                    <td>Ahmed Khan</td>
+                    <td>ahmed@example.com</td>
+                    <td>password123</td>
+                    <td>DON-001</td>
+                    <td>/api/donor/dashboard/DON-001</td>
+                </tr>
+                <tr>
+                    <td>Fatima Ali</td>
+                    <td>fatima@example.com</td>
+                    <td>password123</td>
+                    <td>DON-002</td>
+                    <td>/api/donor/dashboard/DON-002</td>
+                </tr>
+                <tr>
+                    <td>Hassan Raza</td>
+                    <td>hassan@example.com</td>
+                    <td>password123</td>
+                    <td>DON-003</td>
+                    <td>/api/donor/dashboard/DON-003</td>
+                </tr>
+            </table>
+            
+            <p style="margin-top: 15px; color: #666;">
+                <strong>How it works:</strong> When a user logs in, the system matches email + password, 
+                retrieves the unique ID from the database, and stores it in browser localStorage. 
+                All subsequent requests use this ID to access only that user's data from CustomHashMap.
+            </p>
+        </div>
+        
+        <!-- API Endpoints -->
+        <div class="section">
+            <h2><span class="emoji">🌐</span>API Endpoints (Testing)</h2>
+            
+            <h3 style="margin-top: 20px; margin-bottom: 10px;">Debug Endpoints (View Current Data):</h3>
+            <div class="endpoint">GET /api/debug/donors</div>
+            <p style="color: #666; margin-bottom: 15px;">Returns JSON of all registered donors in RAM</p>
+            <button class="test-button" onclick="testEndpoint('/api/debug/donors')">Test Now →</button>
+            
+            <div class="endpoint" style="margin-top: 20px;">GET /api/debug/recipients</div>
+            <p style="color: #666; margin-bottom: 15px;">Returns JSON of all blood requests in RAM</p>
+            <button class="test-button" onclick="testEndpoint('/api/debug/recipients')">Test Now →</button>
+            
+            <h3 style="margin-top: 30px; margin-bottom: 10px;">Main API Endpoints:</h3>
+            <table>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/auth/register/donor</td>
+                    <td>Register new donor</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/auth/register/recipient</td>
+                    <td>Register patient</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/auth/login</td>
+                    <td>User login (email + password)</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/donor/dashboard/{userId}</td>
+                    <td>Get donor's profile</td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>/api/recipient/dashboard/{userId}</td>
+                    <td>Get patient's profile</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td>/api/recipient/request</td>
+                    <td>Create blood request (triggers matching)</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Quick Test -->
+        <div class="section">
+            <h2><span class="emoji">🧪</span>Quick Test - Verify Everything Works</h2>
+            
+            <h3 style="margin-top: 0; color: #333;">Step-by-Step:</h3>
+            <ol style="line-height: 2; margin-left: 20px;">
+                <li><strong>Check Donors:</strong> Click "Test Now" above for /api/debug/donors</li>
+                <li><strong>Expected:</strong> JSON with 3 donors (Ahmed, Fatima, Hassan)</li>
+                <li><strong>New Donor:</strong> Register at http://localhost:18080/register.html</li>
+                <li><strong>Verify CSV:</strong> Check /api/debug/donors again (count should increase)</li>
+                <li><strong>Server Restart:</strong> Stop and start backend</li>
+                <li><strong>Persistence Check:</strong> /api/debug/donors should still show new donor ✅</li>
+            </ol>
+        </div>
+        
+        <!-- Images Section -->
+        <div class="section">
+            <h2><span class="emoji">🖼️</span>Images Issue Resolved</h2>
+            
+            <p><strong>Status:</strong> <span class="status ok">Using External URLs</span></p>
+            
+            <p style="margin-top: 15px;">
+                The frontend uses images from <strong>Unsplash</strong> (external CDN).
+                These require internet connection to load. Local images folder is intentionally 
+                empty for this demo implementation.
+            </p>
+            
+            <p style="margin-top: 10px; color: #666;">
+                <code>src="https://images.unsplash.com/photo-...?q=80&w=500"</code>
+            </p>
+        </div>
+        
+        <!-- Summary -->
+        <div class="section">
+            <h2><span class="emoji">✅</span>Summary - All Questions Answered</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h4 style="color: #667eea;">❓ Images nahi aa rahe?</h4>
+                    <p><strong>✅ Answer:</strong> External URLs (Unsplash) - internet required</p>
+                </div>
+                
+                <div>
+                    <h4 style="color: #667eea;">❓ CSV mein data save ho raha?</h4>
+                    <p><strong>✅ Answer:</strong> Haan! Register → CSV append → Disk saved</p>
+                </div>
+                
+                <div>
+                    <h4 style="color: #667eea;">❓ Data fetch kahan se?</h4>
+                    <p><strong>✅ Answer:</strong> CSV file se (server startup par load)</p>
+                </div>
+                
+                <div>
+                    <h4 style="color: #667eea;">❓ User separation?</h4>
+                    <p><strong>✅ Answer:</strong> Email + Password + Unique ID system</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Documentation Links -->
+        <div class="section">
+            <h2><span class="emoji">📚</span>Full Documentation</h2>
+            
+            <p style="margin-bottom: 20px;">Read detailed guides in these files:</p>
+            
+            <ul style="list-style: none; padding: 0;">
+                <li style="padding: 12px; background: #f8f9fa; margin: 10px 0; border-radius: 5px;">
+                    📄 <strong>QUICK_REFERENCE.md</strong> - 5 min overview (START HERE)
+                </li>
+                <li style="padding: 12px; background: #f8f9fa; margin: 10px 0; border-radius: 5px;">
+                    📄 <strong>ARCHITECTURE_URDU.md</strong> - Complete design explanation
+                </li>
+                <li style="padding: 12px; background: #f8f9fa; margin: 10px 0; border-radius: 5px;">
+                    📄 <strong>CODE_FLOW.md</strong> - Step-by-step code walkthroughs
+                </li>
+                <li style="padding: 12px; background: #f8f9fa; margin: 10px 0; border-radius: 5px;">
+                    📄 <strong>TESTING_GUIDE.md</strong> - 10 test cases with expected outputs
+                </li>
+                <li style="padding: 12px; background: #f8f9fa; margin: 10px 0; border-radius: 5px;">
+                    📄 <strong>DOCUMENTATION_INDEX.md</strong> - All docs index
+                </li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>🩸 Smart Blood Donation Network - Complete System</p>
+            <p style="margin-top: 10px; opacity: 0.8;">Server: http://localhost:18080 | Status: ✅ Running</p>
+        </footer>
+    </div>
+    
+    <script>
+        function testEndpoint(endpoint) {
+            const url = `http://localhost:18080${endpoint}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    alert(`✅ Response from ${endpoint}:\n\n${JSON.stringify(data, null, 2)}`);
+                    // Also open in new tab
+                    window.open(url, '_blank');
+                })
+                .catch(error => {
+                    alert(`❌ Error: ${error.message}\n\nMake sure server is running on port 18080`);
+                });
+        }
+    </script>
+</body>
+</html>
+

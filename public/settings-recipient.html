@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipient Settings - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="css/dark-mode.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .settings-card {
+            max-width: 800px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-family: 'Outfit';
+        }
+
+        .setting-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+</head>
+
+<body class="recipient-theme">
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon"></span>
+    </button>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo" style="text-decoration: none;">
+                <i class="fas fa-heartbeat logo-heartbeat"></i>
+                <span>BloodConnect</span>
+            </a>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard-recipient.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="request-blood.html"><i class="fas fa-plus-circle"></i> New Request</a></li>
+                <li><a href="my-requests.html"><i class="fas fa-list-ul"></i> My Requests</a></li>
+                <li><a href="receipts-recipient.html"><i class="fas fa-file-invoice"></i> Receipts</a></li>
+                <li><a href="emergency-broadcast.html" style="color: #ef4444;"><i class="fas fa-broadcast-tower"></i>
+                        Emergency</a></li>
+                <li><a href="settings-recipient.html" class="active"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <a href="#" onclick="App.logout()"
+                style="color: #ef4444; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin-top: auto;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <h2 style="font-size: 2.25rem;">Account Settings</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2.5rem;">Configure your preferences and notifications</p>
+
+            <div class="settings-card card">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Real-time Notifications</h4>
+                        <p>Receive live updates when a donor is matched and in-transit</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>SMS Confirmation</h4>
+                        <p>Get a text message with donor contact details upon acceptance</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h4>Privacy Masking</h4>
+                        <p>Hide your exact hospital room number from initial donor view</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div style="margin-top: 3rem; display: flex; gap: 1rem;">
+                    <button class="btn-primary" style="flex: 1; background: var(--secondary); justify-content: center;"
+                        onclick="App.showToast('Settings updated successfully', 'success')">
+                        <i class="fas fa-save"></i> Save Preferences
+                    </button>
+                    <button class="btn-secondary" style="flex: 1; justify-content: center;">
+                        <i class="fas fa-lock"></i> Change Password
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

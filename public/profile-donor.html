@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Profile - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/dark-mode.js"></script>
+    <style>
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        .sidebar {
+            background: var(--bg-dark);
+            color: white;
+            padding: 2rem;
+        }
+
+        .main-content {
+            padding: 2rem 3rem;
+        }
+
+        .profile-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            max-width: 900px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+            border: 4px solid white;
+            box-shadow: var(--shadow);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .section-title {
+            margin: 2rem 0 1rem;
+            font-size: 1.25rem;
+            color: var(--text-light);
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: #ecfdf5;
+            color: #10b981;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body class="donor-theme">
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon">🌙</span>
+    </button>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo" style="text-decoration: none;">
+                <i class="fas fa-heartbeat logo-heartbeat"></i>
+                <span>BloodConnect</span>
+            </a>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard-donor.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile-donor.html" class="active"><i class="fas fa-user"></i> My Profile</a></li>
+                <li><a href="history-donor.html"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="badges-donor.html"><i class="fas fa-medal"></i> Badges</a></li>
+                <li><a href="nearby-centers.html"><i class="fas fa-map-marker-alt"></i> Nearby Centers</a></li>
+                <li><a href="settings-donor.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <a href="#" onclick="App.logout()"
+                style="color: #ef4444; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin-top: auto;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-pic"><i class="fas fa-user"></i></div>
+                    <div>
+                        <h2 id="profName">Ahmed Khan</h2>
+                        <div class="verification-badge"><i class="fas fa-check-circle"></i> CNIC VERIFIED</div>
+                        <p style="color: var(--text-muted); margin-top: 0.5rem;">Donor ID: DON-001 | A+ Positive</p>
+                    </div>
+                </div>
+
+                <form id="profileForm">
+                    <h3 class="section-title">Personal Details</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="name" value="Ahmed Khan">
+                        </div>
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input type="number" id="age" value="28">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="email" value="ahmed@example.com" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input type="tel" id="phone" value="+923001234567">
+                        </div>
+                    </div>
+
+                    <h3 class="section-title">Location & Availability</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="city" value="Islamabad">
+                        </div>
+                        <div class="form-group">
+                            <label>Area</label>
+                            <input type="text" id="area" value="F-8">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Full Address</label>
+                            <input type="text" id="address" value="House 123, Street 5, F-8 Markaz">
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 3rem; display: flex; gap: 1rem;">
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                        <button type="button" class="btn-secondary">Change Password</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('blood_connect_user'));
+        if (!user) window.location.href = 'login.html';
+
+        // Load full user profile from stored data or backend
+        function loadProfile() {
+            const profileData = JSON.parse(localStorage.getItem('blood_connect_profile')) || user;
+            
+            // Update name in header and form
+            document.getElementById('profName').innerText = profileData.name || user.name;
+            document.getElementById('name').value = profileData.name || user.name;
+            
+            // Load all fields
+            if (profileData.age) document.getElementById('age').value = profileData.age;
+            if (profileData.email) document.getElementById('email').value = profileData.email;
+            if (profileData.phone) document.getElementById('phone').value = profileData.phone;
+            if (profileData.city) document.getElementById('city').value = profileData.city;
+            if (profileData.area) document.getElementById('area').value = profileData.area;
+            if (profileData.address) document.getElementById('address').value = profileData.address;
+        }
+
+        // Load on page load
+        loadProfile();
+
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('name').value,
+                age: parseInt(document.getElementById('age').value),
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                city: document.getElementById('city').value,
+                area: document.getElementById('area').value,
+                address: document.getElementById('address').value
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('blood_connect_profile', JSON.stringify(data));
+            
+            // Also update main user object
+            Object.assign(user, data);
+            localStorage.setItem('blood_connect_user', JSON.stringify(user));
+            
+            App.showToast('Profile updated successfully!', 'success');
+            document.getElementById('profName').innerText = data.name;
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Donation Centers - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="css/dark-mode.css"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        .main-content {
+            padding: 2rem 3rem;
+        }
+
+        .centers-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .center-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .center-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .center-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .center-info h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .center-info p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .maps-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            grid-column: span 2;
+            margin-bottom: 2rem;
+        }
+
+        .map-preview {
+            background: #e2e8f0;
+            height: 400px;
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid white;
+            box-shadow: var(--shadow);
+        }
+
+        .google-map {
+            height: 400px;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 2px solid white;
+        }
+
+        .graph-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 3px solid white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .graph-dot:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .graph-label {
+            position: absolute;
+            background: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            box-shadow: var(--shadow);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+</head>
+
+<body class="donor-theme">
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon"></span>
+    </button>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo" style="text-decoration: none;">
+                <i class="fas fa-heartbeat logo-heartbeat"></i>
+                <span>BloodConnect</span>
+            </a>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard-donor.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile-donor.html"><i class="fas fa-user"></i> My Profile</a></li>
+                <li><a href="history-donor.html"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="badges-donor.html"><i class="fas fa-medal"></i> Badges</a></li>
+                <li><a href="nearby-centers.html" class="active"><i class="fas fa-map-marker-alt"></i> Nearby
+                        Centers</a></li>
+                <li><a href="settings-donor.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <a href="#" onclick="App.logout()"
+                style="color: #ef4444; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin-top: auto;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <h2>Find Donation Centers</h2>
+            <p style="color: var(--text-muted);">Real-time tracking and custom DSA pathfinding</p>
+
+            <div class="centers-container">
+                <div class="maps-grid">
+                    <!-- Custom Graph -->
+                    <div class="map-preview">
+                        <div style="z-index: 1; color: #64748b; text-align: center;">
+                            <i class="fas fa-project-diagram" style="font-size: 3rem; margin-bottom: 0.5rem;"></i>
+                            <p style="font-weight: 700;">DSA Graph Topology</p>
+                            <p style="font-size: 0.7rem;">Manual Node Navigation</p>
+                        </div>
+                        <div class="graph-dot" style="top: 30%; left: 20%;" title="PIMS"></div>
+                        <div class="graph-label" style="top: 25%; left: 18%;">H1 (PIMS)</div>
+                        <div class="graph-dot" style="top: 45%; left: 55%;" title="Shifa"></div>
+                        <div class="graph-label" style="top: 40%; left: 53%;">H2 (Shifa)</div>
+                        <div class="graph-dot" style="top: 70%; left: 35%;" title="F-8 Markaz"></div>
+                        <div class="graph-label" style="top: 65%; left: 33%;">D1 (Home)</div>
+                        <svg width="100%" height="100%" style="position: absolute; pointer-events: none;">
+                            <line x1="20%" y1="30%" x2="55%" y2="45%" stroke="#cbd5e1" stroke-width="2" />
+                            <line x1="20%" y1="30%" x2="35%" y2="70%" stroke="#cbd5e1" stroke-width="2" />
+                        </svg>
+                    </div>
+
+                    <!-- Google Maps Live -->
+                    <div class="google-map">
+                        <iframe width="100%" height="100%" frameborder="0" style="border:0"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13284.1444059288!2d73.045059!3d33.6844!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbf7930926831%3A0xa59c47087612f0e6!2sF-8%2C%20Islamabad!5e0!3m2!1sen!2spk!4v1703000000000!5m2!1sen!2spk"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+                <div class="center-card">
+                    <div class="center-icon"><i class="fas fa-hospital-symbol"></i></div>
+                    <div class="center-info">
+                        <h4>PIMS Hospital</h4>
+                        <p>Islamabad | 3.8 km away</p>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <span class="status-pill status-completed">OPEN</span>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Wait: 15m</span>
+                        </div>
+                        <button class="btn-primary" onclick="getDirections('PIMS', 33.7224, 73.2523)" style="margin-top: 1rem; width: 100%; font-size: 0.875rem;">Get
+                            Directions</button>
+                    </div>
+                </div>
+
+                <div class="center-card">
+                    <div class="center-icon"><i class="fas fa-syringe"></i></div>
+                    <div class="center-info">
+                        <h4>F-8 Donor Hub</h4>
+                        <p>Islamabad | 2.1 km away</p>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <span class="status-pill status-completed">OPEN</span>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Wait: 5m</span>
+                        </div>
+                        <button class="btn-primary" onclick="getDirections('F-8 Donor Hub', 33.6844, 73.0451)" style="margin-top: 1rem; width: 100%; font-size: 0.875rem;">Get
+                            Directions</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('blood_connect_user'));
+        if (!user) window.location.href = 'login.html';
+
+        // Load user profile to get their location
+        const userProfile = JSON.parse(localStorage.getItem('blood_connect_profile')) || {};
+        const userCity = userProfile.city || 'Islamabad';
+        const userArea = userProfile.area || 'F-8';
+
+        // Update map title with user's location
+        document.querySelector('.main-content p').innerText = `Finding centers near ${userArea}, ${userCity}`;
+
+        // Dynamic map embedding with user location
+        function updateMap() {
+            const mapContainer = document.querySelector('.google-map');
+            if (!mapContainer) return;
+            
+            // Common Islamabad coordinates
+            const areaCoords = {
+                'F-8': { lat: 33.6844, lng: 73.0451, name: 'F-8, Islamabad' },
+                'G-9': { lat: 33.6934, lng: 73.0545, name: 'G-9, Islamabad' },
+                'E-10': { lat: 33.7122, lng: 73.0556, name: 'E-10, Islamabad' },
+                'DHA': { lat: 33.6000, lng: 73.3000, name: 'DHA Phase 5, Islamabad' },
+                'F-7': { lat: 33.6750, lng: 73.0350, name: 'F-7, Islamabad' },
+                'H-8': { lat: 33.6500, lng: 73.1300, name: 'H-8, Islamabad' },
+                'Blue Area': { lat: 33.7224, lng: 73.2523, name: 'Blue Area, Islamabad' }
+            };
+            
+            const coords = areaCoords[userArea] || areaCoords['F-8'];
+            
+            // Update Google Maps embed with user's location
+            mapContainer.innerHTML = `
+                <iframe width="100%" height="100%" frameborder="0" style="border:0"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.8!2d${coords.lng}!3d${coords.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s${coords.name}!5e0!3m2!1sen!2spk!4v1703000000000!5m2!1sen!2spk"
+                    allowfullscreen="">
+                </iframe>
+            `;
+        }
+
+        // Update graph with nearby donor nodes
+        function updateGraph() {
+            const graphContainer = document.querySelector('.map-preview');
+            if (!graphContainer) return;
+            
+            // Clear existing graph
+            graphContainer.innerHTML = `
+                <div style="z-index: 1; color: #64748b; text-align: center;">
+                    <i class="fas fa-project-diagram" style="font-size: 3rem; margin-bottom: 0.5rem;"></i>
+                    <p style="font-weight: 700;">DSA Graph Topology</p>
+                    <p style="font-size: 0.7rem;">Showing hospitals near ${userArea}</p>
+                </div>
+                <div class="graph-dot" style="top: 30%; left: 20%;" title="PIMS Hospital"></div>
+                <div class="graph-label" style="top: 25%; left: 18%;">H1 (PIMS)</div>
+                
+                <div class="graph-dot" style="top: 45%; left: 55%;" title="Shifa Hospital"></div>
+                <div class="graph-label" style="top: 40%; left: 53%;">H2 (Shifa)</div>
+                
+                <div class="graph-dot" style="top: 70%; left: 35%;" title="${userArea}"></div>
+                <div class="graph-label" style="top: 65%; left: 33%;">YOU (${userArea})</div>
+                
+                <svg width="100%" height="100%" style="position: absolute; pointer-events: none;">
+                    <line x1="20%" y1="30%" x2="55%" y2="45%" stroke="#cbd5e1" stroke-width="2" />
+                    <line x1="20%" y1="30%" x2="35%" y2="70%" stroke="#cbd5e1" stroke-width="2" />
+                    <line x1="55%" y1="45%" x2="35%" y2="70%" stroke="#cbd5e1" stroke-width="2" />
+                </svg>
+            `;
+        }
+
+        // Initialize maps and graph on load
+        updateMap();
+        updateGraph();
+
+        function getDirections(centerName, lat, lng) {
+            App.showToast(`Opening ${centerName} directions...`, 'success');
+            // Open Google Maps with directions
+            const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+            window.open(mapsUrl, '_blank');
+            alert(`Directions to ${centerName}:\nLat: ${lat}, Lng: ${lng}\n\nOpening in Google Maps...`);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badges & Rewards - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="css/dark-mode.css"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            background: #f3f4f6;
+        }
+
+        .main-content {
+            padding: 2rem 3rem;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 3rem;
+            border-radius: 1.5rem;
+            color: white;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .badge-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            filter: grayscale(1);
+            opacity: 0.7;
+        }
+
+        .badge-card.unlocked {
+            filter: grayscale(0);
+            opacity: 1;
+            border: 2px solid var(--primary-light);
+        }
+
+        .badge-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .badge-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .progress-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 8px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            margin: 0 auto 1rem;
+        }
+
+        .badge-bronze {
+            color: #cd7f32;
+        }
+
+        .badge-silver {
+            color: #c0c0c0;
+        }
+
+        .badge-gold {
+            color: #ffd700;
+        }
+
+        .badge-platinum {
+            color: #e5e4e2;
+        }
+
+        .badge-hero {
+            color: var(--primary);
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+</head>
+
+<body class="donor-theme">
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon"></span>
+    </button>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo" style="text-decoration: none;">
+                <i class="fas fa-heartbeat logo-heartbeat"></i>
+                <span>BloodConnect</span>
+            </a>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard-donor.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile-donor.html"><i class="fas fa-user"></i> My Profile</a></li>
+                <li><a href="history-donor.html"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="badges-donor.html" class="active"><i class="fas fa-medal"></i> Badges</a></li>
+                <li><a href="nearby-centers.html"><i class="fas fa-map-marker-alt"></i> Nearby Centers</a></li>
+                <li><a href="settings-donor.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <a href="#" onclick="App.logout()"
+                style="color: #ef4444; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin-top: auto;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <div class="hero-banner">
+                <div>
+                    <h2 style="font-size: 2rem; margin-bottom: 1rem;">Level Up Your Impact</h2>
+                    <p>Current Rank: <strong>Gold Donor</strong></p>
+                    <div style="margin-top: 1.5rem; font-size: 0.875rem;">Next: Platinum at 15 Donations</div>
+                    <div class="progress-bar" style="width: 300px; height: 12px; margin-top: 0.5rem;">
+                        <div class="progress-fill" style="width: 75%; background: #ffd700;"></div>
+                    </div>
+                </div>
+                <div style="font-size: 5rem; opacity: 0.3;"><i class="fas fa-trophy"></i></div>
+            </div>
+
+            <h3 style="margin-bottom: 2rem;">Your Badge Collection</h3>
+            <div class="badges-grid">
+                <div class="badge-card unlocked">
+                    <div class="badge-icon badge-bronze"><i class="fas fa-award"></i></div>
+                    <div class="badge-title">First Step</div>
+                    <div class="badge-desc">Completed 1st donation</div>
+                </div>
+                <div class="badge-card unlocked">
+                    <div class="badge-icon badge-silver"><i class="fas fa-shield-alt"></i></div>
+                    <div class="badge-title">Supporter</div>
+                    <div class="badge-desc">Completed 5 donations</div>
+                </div>
+                <div class="badge-card unlocked">
+                    <div class="badge-icon badge-gold"><i class="fas fa-medal"></i></div>
+                    <div class="badge-title">Life Saver</div>
+                    <div class="badge-desc">Completed 10 donations</div>
+                </div>
+                <div class="badge-card">
+                    <div class="badge-icon badge-platinum"><i class="fas fa-crown"></i></div>
+                    <div class="badge-title">Guardian</div>
+                    <div class="badge-desc">Complete 25 donations</div>
+                </div>
+                <div class="badge-card unlocked">
+                    <div class="badge-icon" style="color: #ef4444;"><i class="fas fa-bolt"></i></div>
+                    <div class="badge-title">Rapid Responder</div>
+                    <div class="badge-desc">Accepted request < 5 mins</div>
+                    </div>
+                    <div class="badge-card">
+                        <div class="badge-icon" style="color: #3b82f6;"><i class="fas fa-tint"></i></div>
+                        <div class="badge-title">Rare Hero</div>
+                        <div class="badge-desc">Donate rare blood type</div>
+                    </div>
+                </div>
+        </main>
+    </div>
+</body>
+
+</html>

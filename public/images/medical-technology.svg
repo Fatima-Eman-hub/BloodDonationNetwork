@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <!-- Background Gradient -->
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8f4f8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b3dfe5;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ee5a52;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="500" height="500" fill="url(#bgGrad)"/>
+  
+  <!-- Medical Stethoscope -->
+  <g transform="translate(250, 150)">
+    <!-- Stethoscope earpieces -->
+    <circle cx="-40" cy="-80" r="15" fill="#333" stroke="#666" stroke-width="3"/>
+    <circle cx="40" cy="-80" r="15" fill="#333" stroke="#666" stroke-width="3"/>
+    
+    <!-- Stethoscope tubing -->
+    <path d="M -40 -65 Q -60 -30 -70 20 Q -75 50 -40 80" stroke="#333" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <path d="M 40 -65 Q 60 -30 70 20 Q 75 50 40 80" stroke="#333" stroke-width="12" fill="none" stroke-linecap="round"/>
+    
+    <!-- Stethoscope diaphragm -->
+    <circle cx="0" cy="100" r="35" fill="url(#redGrad)" stroke="#333" stroke-width="3"/>
+    <circle cx="0" cy="100" r="25" fill="none" stroke="#fff" stroke-width="2"/>
+  </g>
+  
+  <!-- Blood Drop -->
+  <g transform="translate(380, 200)">
+    <path d="M 0 0 C -15 -20 -25 -35 -25 -50 C -25 -65 -15 -75 0 -75 C 15 -75 25 -65 25 -50 C 25 -35 15 -20 0 0 Z" fill="url(#redGrad)" stroke="#c92a2a" stroke-width="2"/>
+    
+    <!-- Pulse line -->
+    <g opacity="0.7">
+      <line x1="0" y1="10" x2="15" y2="10" stroke="#c92a2a" stroke-width="2"/>
+      <line x1="15" y1="10" x2="20" y2="5" stroke="#c92a2a" stroke-width="2"/>
+      <line x1="20" y1="5" x2="25" y2="15" stroke="#c92a2a" stroke-width="2"/>
+    </g>
+  </g>
+  
+  <!-- Heartbeat/Pulse Wave -->
+  <g transform="translate(50, 350)">
+    <path d="M 0 0 L 15 0 L 20 -15 L 30 15 L 40 -10 L 50 5 L 60 0 L 100 0" 
+          stroke="#ff6b6b" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Medical Cross -->
+  <g transform="translate(120, 250)">
+    <circle cx="0" cy="0" r="40" fill="#fff" stroke="#ff6b6b" stroke-width="3"/>
+    <rect x="-8" y="-25" width="16" height="50" fill="#ff6b6b"/>
+    <rect x="-25" y="-8" width="50" height="16" fill="#ff6b6b"/>
+  </g>
+  
+  <!-- Information Text -->
+  <text x="250" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">
+    Smart Blood Donation System
+  </text>
+</svg>

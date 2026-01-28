@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Dashboard - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/dark-mode.js"></script>
+    <style>
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .status-toggle {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            background: white;
+            padding: 0.75rem 1.75rem;
+            border-radius: 3rem;
+            box-shadow: var(--shadow);
+            font-weight: 700;
+            border: 1px solid var(--border);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .feed-container {
+            grid-column: span 2;
+        }
+
+        .request-item {
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 1.25rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .request-item:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .request-info h4 {
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-family: 'Outfit';
+        }
+
+        .request-meta {
+            display: flex;
+            gap: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .request-meta i {
+            color: var(--primary);
+        }
+
+        .badge-widget {
+            text-align: center;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            border: none;
+        }
+
+        .badge-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+            margin: 1rem 0;
+            font-family: 'Outfit';
+        }
+
+        /* Beautified Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input:checked+.slider {
+            background-color: var(--success);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Floating Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 50%;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+    </style>
+</head>
+
+<body class="donor-theme">
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon">🌙</span>
+    </button>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo" style="text-decoration: none;">
+                <i class="fas fa-heartbeat logo-heartbeat"></i>
+                <span>BloodConnect</span>
+            </a>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard-donor.html" class="active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile-donor.html"><i class="fas fa-user"></i> My Profile</a></li>
+                <li><a href="history-donor.html"><i class="fas fa-history"></i> History</a></li>
+                <li><a href="badges-donor.html"><i class="fas fa-medal"></i> Badges</a></li>
+                <li><a href="nearby-centers.html"><i class="fas fa-map-marker-alt"></i> Nearby Centers</a></li>
+                <li><a href="settings-donor.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <a href="#" onclick="App.logout()"
+                style="color: #ef4444; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin-top: auto;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <div class="welcome-text">
+                    <h2 id="welcomeText" style="font-family: 'Outfit'; font-size: 2rem;">Welcome!</h2>
+                    <p id="todayDate" style="color: var(--text-muted);">Friday, December 19, 2025</p>
+                </div>
+                <div class="status-toggle">
+                    <span id="statusLabel" style="color: var(--success);">AVAILABLE</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked id="statusToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="widget card">
+                    <h3 style="font-family: 'Outfit';">Donation Stats</h3>
+                    <div class="stat-value">12</div>
+                    <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">Total Units Donated</p>
+                </div>
+                <div class="widget badge-widget card">
+                    <div class="badge-icon"><i class="fas fa-trophy"></i></div>
+                    <h3 style="font-family: 'Outfit';">Gold Donor</h3>
+                    <p style="font-size: 0.9rem; opacity: 0.9;">3 more to Platinum Hero!</p>
+                </div>
+                <div class="widget card">
+                    <h3 style="font-family: 'Outfit';">Next Eligibility</h3>
+                    <div style="display: flex; align-items: center; gap: 1.25rem; margin-top: 1.5rem;">
+                        <div
+                            style="width: 50px; height: 50px; border-radius: 50%; background: var(--success-light); display: flex; align-items: center; justify-content: center; color: var(--success); font-size: 1.5rem;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700;">Eligible Now</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Last Donated: Sep 20</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget feed-container card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h3 style="font-family: 'Outfit';">Active Requests Near You</h3>
+                        <span
+                            style="background: var(--primary-light); color: var(--primary); padding: 0.35rem 1rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em;">LIVE
+                            RADAR</span>
+                    </div>
+
+                    <div id="requestFeed">
+                        <div class="request-item">
+                            <div class="request-info">
+                                <h4>URGENT: B+ Positive Needed</h4>
+                                <div class="request-meta">
+                                    <span><i class="fas fa-hospital"></i> PIMS Hospital</span>
+                                    <span><i class="fas fa-route"></i> 3.2 km</span>
+                                    <span><i class="fas fa-clock"></i> 14m ago</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="acceptRequest('REQ-001')">Accept</button>
+                        </div>
+
+                        <div class="request-item">
+                            <div class="request-info">
+                                <h4>A+ Positive Requested</h4>
+                                <div class="request-meta">
+                                    <span><i class="fas fa-hospital"></i> Aga Khan</span>
+                                    <span><i class="fas fa-route"></i> 5.8 km</span>
+                                    <span><i class="fas fa-clock"></i> 1h ago</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="acceptRequest('REQ-002')">Accept</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget card">
+                    <h3 style="font-family: 'Outfit'; margin-bottom: 1.5rem;">Quick Tools</h3>
+                    <div style="display: grid; gap: 1rem;">
+                        <button class="btn-secondary" id="scheduleBtn" onclick="scheduleNext()"
+                            style="width: 100%; justify-content: center;">
+                            <i class="fas fa-calendar-check"></i> Schedule Next
+                        </button>
+                        <button class="btn-secondary" id="healthBtn" onclick="viewHealthReport()"
+                            style="width: 100%; justify-content: center;">
+                            <i class="fas fa-file-medical-alt"></i> Health Report
+                        </button>
+                        <button class="btn-secondary" id="issueBtn" onclick="reportIssue()"
+                            style="width: 100%; justify-content: center; color: var(--error);">
+                            <i class="fas fa-exclamation-triangle"></i> Report Issue
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('blood_connect_user'));
+        if (!user) window.location.href = 'login.html';
+
+        document.getElementById('welcomeText').innerText = `Welcome, ${user.name || 'User'}!`;
+
+        const today = new Date().toLocaleDateString('en-US', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+        document.getElementById('todayDate').innerText = today;
+
+        document.getElementById('statusToggle').addEventListener('change', function (e) {
+            const label = document.getElementById('statusLabel');
+            const status = e.target.checked ? 'AVAILABLE' : 'AWAY';
+            label.innerText = status;
+            label.style.color = e.target.checked ? 'var(--success)' : 'var(--text-muted)';
+
+            if (user && user.userId) {
+                App.updateDonorStatus(user.userId, status);
+            }
+        });
+
+        async function acceptRequest(id) {
+            if (confirm('Accept this urgent request?')) {
+                const success = await App.acceptRequest(user.userId, id);
+                if (success) {
+                    setTimeout(() => location.reload(), 1500);
+                }
+            }
+        }
+
+        // Quick Tools Functionality
+        function scheduleNext() {
+            const nextDate = new Date();
+            nextDate.setDate(nextDate.getDate() + 56); // Blood donation every 56 days
+            const dateStr = nextDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            App.showToast(`Next donation scheduled for ${dateStr}`, 'success');
+            alert(`Your next blood donation is scheduled for: ${dateStr}\n\nLocation: Nearest Blood Bank\nReminder will be sent via email.`);
+        }
+
+        function viewHealthReport() {
+            App.showToast('Fetching your health report...', 'info');
+            alert('Health Report:\n\n✓ Hemoglobin: 14.5 g/dL (Normal)\n✓ Blood Pressure: 120/80 mmHg (Healthy)\n✓ Cholesterol: 180 mg/dL (Normal)\n✓ Blood Sugar: 95 mg/dL (Normal)\n\nLast Updated: Today');
+        }
+
+        function reportIssue() {
+            const issue = prompt('Please describe the issue you\'re facing:');
+            if (issue && issue.trim()) {
+                App.showToast('Issue reported successfully!', 'success');
+                alert('Thank you for reporting! Our team will review this shortly.\n\nTicket ID: TKT-' + Math.random().toString(36).substr(2, 9).toUpperCase());
+            }
+        }
+    </script>
+</body>
+
+</html>

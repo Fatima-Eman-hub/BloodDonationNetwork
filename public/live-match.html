@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Tracking - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tracking-layout {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .status-panel {
+            background: white;
+            padding: 2.5rem;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .map-panel {
+            background: #f8fafc;
+            padding: 2rem;
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 2rem;
+            overflow-y: auto;
+        }
+
+        .graph-wrapper,
+        .google-map-wrapper {
+            position: relative;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            height: 400px;
+            /* Specific height for split view */
+        }
+
+        .graph-viz {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .node {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border: 3px solid var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: var(--secondary);
+            z-index: 5;
+            font-size: 0.9rem;
+        }
+
+        .node.donor {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .status-card {
+            background: var(--secondary-light);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .tracking-steps {
+            list-style: none;
+            position: relative;
+            margin-top: 2rem;
+        }
+
+        .tracking-steps::before {
+            content: '';
+            position: absolute;
+            left: 17px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: #e5e7eb;
+        }
+
+        .tracking-step {
+            padding-left: 50px;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .step-icon {
+            position: absolute;
+            left: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            z-index: 2;
+        }
+
+        .tracking-step.completed .step-icon {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .tracking-step.current .step-icon {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            background: var(--secondary-light);
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+</head>
+
+<body class="recipient-theme">
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon"></span>
+    </button>
+    <div class="tracking-layout">
+        <!-- Status Panel -->
+        <aside class="status-panel">
+            <a href="dashboard-recipient.html" class="btn-secondary"
+                style="width: 100%; margin-bottom: 2rem; justify-content: flex-start; border: none; padding: 0;">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+
+            <div class="status-card">
+                <h3 style="color: var(--secondary-dark); margin-bottom: 0.5rem; font-family: 'Outfit';">Live Matching...
+                </h3>
+                <p style="font-size: 0.875rem; color: var(--text-muted);">Optimizing route using Dijkstra's Algorithm
+                </p>
+            </div>
+
+            <div class="donor-profile-mini card" style="padding: 1.25rem; margin-bottom: 2rem;">
+                <h4 style="margin-bottom: 1rem; font-size: 0.95rem;">Matched Donor</h4>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div
+                        style="width: 50px; height: 50px; border-radius: 12px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--primary);">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div>
+                        <!-- DYNAMIC: Donor name loaded from matched donor data -->
+                        <div id="donorNameDisplay" style="font-weight: 700; font-size: 0.95rem;">Loading...</div>
+                        <!-- DYNAMIC: Blood type loaded from matched donor -->
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Blood Type: <span
+                                id="donorBloodDisplay" style="color: var(--primary); font-weight: 700;">--</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="tracking-steps">
+                <li class="tracking-step completed">
+                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                    <div style="font-weight: 600;">Request Broadcasted</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Real-time WS event sent</div>
+                </li>
+                <li class="tracking-step completed">
+                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                    <div style="font-weight: 600;">Donor Found</div>
+                    <!-- DYNAMIC: Shows actual matched donor name and match details -->
+                    <div style="font-size: 0.75rem; color: var(--text-muted);" id="donorFoundText">Searching for
+                        donor...</div>
+                </li>
+                <li class="tracking-step current">
+                    <div class="step-icon"><i class="fas fa-spinner fa-spin"></i></div>
+                    <div style="font-weight: 600;">Awaiting Acceptance</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Waiting for donor confirmation...</div>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Map Panel -->
+        <main class="map-panel">
+            <div class="graph-wrapper">
+                <div class="graph-viz" id="graphViz">
+                    <div style="position: absolute; top: 1rem; left: 1.5rem; z-index: 10;">
+                        <span class="badge"
+                            style="background: var(--primary-light); color: var(--primary); font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 1rem;">
+                            DSA TOPOLOGY
+                        </span>
+                    </div>
+                    <div class="node donor active" style="top: 20%; left: 15%;">D1</div>
+                    <div class="node" style="top: 50%; left: 55%;">H1</div>
+                    <div class="node" style="top: 80%; left: 25%;">H2</div>
+                    <div class="node" style="top: 30%; left: 80%;">H3</div>
+                    <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0;">
+                        <line x1="20%" y1="25%" x2="57%" y2="55%"
+                            style="stroke:var(--primary); stroke-width:4; stroke-dasharray: 10 5;" />
+                        <line x1="57%" y1="55%" x2="28%" y2="85%" style="stroke:var(--border); stroke-width:2;" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="google-map-wrapper">
+                <div style="position: absolute; top: 1rem; left: 1.5rem; z-index: 10;">
+                    <span class="badge"
+                        style="background: var(--secondary-light); color: var(--secondary); font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 1rem;">
+                        LIVE GOOGLE MAPS
+                    </span>
+                </div>
+                <!-- DYNAMIC: Map location updates based on matched donor location -->
+                <iframe id="googleMapFrame" width="100%" height="100%" frameborder="0" style="border:0"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3321.03444059288!2d73.045059!3d33.6844!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbf7930926831%3A0xa59c47087612f0e6!2sF-8%2C%20Islamabad!5e0!3m2!1sen!2spk!4v1703000000000!5m2!1sen!2spk"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // ================= LOAD MATCHED DONOR DATA DYNAMICALLY =================
+        // CHANGED: Instead of hardcoded Ahmed Khan, load from actual matched donor
+
+        // Mock donor database - Same as in request-blood.html
+        const allDonors = [
+            { id: 'D001', name: 'Ahmed Khan', blood: 'O+', city: 'Islamabad', area: 'F-8', distance: 5, phone: '0300-1234567', lastDonation: '2 months ago' },
+            { id: 'D002', name: 'Eman Ali', blood: 'A+', city: 'Islamabad', area: 'DHA', distance: 8, phone: '0300-2345678', lastDonation: '3 months ago' },
+            { id: 'D003', name: 'Hassan Raza', blood: 'B+', city: 'Islamabad', area: 'G-10', distance: 12, phone: '0300-3456789', lastDonation: '1 month ago' },
+            { id: 'D004', name: 'Fatima Ahmad', blood: 'AB+', city: 'Islamabad', area: '9th Avenue', distance: 15, phone: '0300-4567890', lastDonation: '4 months ago' },
+            { id: 'D005', name: 'Ali Hassan', blood: 'O-', city: 'Islamabad', area: 'North Islamabad', distance: 20, phone: '0300-5678901', lastDonation: '5 months ago' }
+        ];
+
+        function initializeLiveMatching() {
+            // ADDED: Load current request from localStorage
+            const currentRequest = JSON.parse(localStorage.getItem('current_active_request') || '{}');
+            const currentDonors = JSON.parse(localStorage.getItem('current_donors') || '[]');
+
+            // ADDED: Get first matched donor (best match)
+            let matchedDonor = null;
+            if (currentDonors && currentDonors.length > 0) {
+                matchedDonor = currentDonors[0];
+            } else {
+                // Fallback: If no dynamic donors, show Ahmed Khan with correct data
+                matchedDonor = allDonors[0]; // Ahmed Khan with O+ blood
+            }
+
+            // ADDED: Update donor display with correct information
+            if (matchedDonor) {
+                document.getElementById('donorNameDisplay').textContent = matchedDonor.name;
+                document.getElementById('donorBloodDisplay').textContent = matchedDonor.blood + ' Positive';
+                document.getElementById('donorFoundText').textContent = `${matchedDonor.name} matched (Distance: ${matchedDonor.distance}km)`;
+
+                // ADDED: Update map location based on donor location
+                updateMapLocation(matchedDonor);
+            }
+        }
+
+        function updateMapLocation(donor) {
+            // CHANGED: Update map embed to show correct donor location
+            // Using Google Maps embed with donor coordinates and proper location string
+            const locationMap = {
+                'F-8': { lat: 33.6844, lng: 73.0450, name: 'F-8 Islamabad Pakistan' },
+                'DHA': { lat: 24.8158, lng: 67.0532, name: 'DHA Islamabad Pakistan' },
+                'G-10': { lat: 24.7893, lng: 67.0299, name: 'G-10 Islamabad Pakistan' },
+                '9th Avenue': { lat: 24.8292, lng: 67.0683, name: '9th Avenue Islamabad Pakistan' },
+                'North Islamabad': { lat: 24.8700, lng: 67.0600, name: 'North Islamabad Pakistan' }
+            };
+
+            const coords = locationMap[donor.area] || { lat: 33.6844, lng: 73.0450, name: 'F-8 Islamabad Pakistan' };
+
+            // Create proper map embed URL with location coordinates
+            // Using simpler embed format that works reliably with coordinates
+            const mapEmbed = `https://www.google.com/maps?q=${coords.lat},${coords.lng}&z=14&output=embed`;
+
+            // Update iframe src
+            document.getElementById('googleMapFrame').src = mapEmbed;
+        }
+
+        // ADDED: Initialize matching data when page loads
+        window.addEventListener('DOMContentLoaded', initializeLiveMatching);
+    </script>

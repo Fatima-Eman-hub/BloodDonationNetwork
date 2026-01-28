@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Receipts - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="css/dark-mode.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .receipts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .receipt-card {
+            border: 2px dashed var(--border);
+            padding: 2rem;
+            position: relative;
+            background: white;
+            transition: var(--transition);
+        }
+
+        .receipt-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary);
+            box-shadow: var(--shadow);
+        }
+
+        .receipt-id {
+            font-family: monospace;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .receipt-item label {
+            color: var(--text-muted);
+        }
+
+        .receipt-item span {
+            font-weight: 600;
+        }
+    </style>
+    <script src="js/dark-mode.js"></script>
+</head>
+
+<body class="recipient-theme">
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon"></span>
+    </button>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo" style="text-decoration: none;">
+                <i class="fas fa-heartbeat logo-heartbeat"></i>
+                <span>BloodConnect</span>
+            </a>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard-recipient.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="request-blood.html"><i class="fas fa-plus-circle"></i> New Request</a></li>
+                <li><a href="my-requests.html"><i class="fas fa-list-ul"></i> My Requests</a></li>
+                <li><a href="receipts-recipient.html" class="active"><i class="fas fa-file-invoice"></i> Receipts</a>
+                </li>
+                <li><a href="emergency-broadcast.html" style="color: #ef4444;"><i class="fas fa-broadcast-tower"></i>
+                        Emergency</a></li>
+                <li><a href="settings-recipient.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <a href="#" onclick="App.logout()"
+                style="color: #ef4444; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin-top: auto;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </aside>
+
+        <main class="main-content">
+            <h2 style="font-size: 2.25rem;">Digital Receipts</h2>
+            <p style="color: var(--text-muted);">View and download your official donation completion receipts</p>
+
+            <div class="receipts-grid">
+                <!-- Sample Receipt -->
+                <div class="receipt-card card">
+                    <span class="receipt-id">#RCPT-2024-88A9</span>
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <i class="fas fa-file-invoice" style="font-size: 2.5rem; color: var(--secondary-dark);"></i>
+                    </div>
+                    <div class="receipt-info">
+                        <div class="receipt-item">
+                            <label>Patient</label>
+                            <span>Sara Ahmed</span>
+                        </div>
+                        <div class="receipt-item">
+                            <label>Donor</label>
+                            <span>Ahmed Khan</span>
+                        </div>
+                        <div class="receipt-item">
+                            <label>Blood Group</label>
+                            <span style="color: var(--primary);">A+ Positive</span>
+                        </div>
+                        <div class="receipt-item">
+                            <label>Date</label>
+                            <span>Dec 15, 2024</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="viewReceipt('#RCPT-2024-88A9', 'Ahmed Khan', 'O+', 'Sara Ahmed', 'Dec 15, 2024')"
+                        style="width: 100%; margin-top: 1.5rem; background: var(--secondary); justify-content: center;">
+                        <i class="fas fa-eye"></i> View Receipt
+                    </button>
+                <div class="receipt-card card">
+                    <span class="receipt-id">#RCPT-2024-11C2</span>
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <i class="fas fa-file-invoice" style="font-size: 2.5rem; color: var(--secondary-dark);"></i>
+                    </div>
+                    <div class="receipt-info">
+                        <div class="receipt-item">
+                            <label>Patient</label>
+                            <span>Amna Bib</span>
+                        </div>
+                        <div class="receipt-item">
+                            <label>Donor</label>
+                            <span>Zaid Ali</span>
+                        </div>
+                        <div class="receipt-item">
+                            <label>Blood Group</label>
+                            <span style="color: var(--primary);">O+ Positive</span>
+                        </div>
+                        <div class="receipt-item">
+                            <label>Date</label>
+                            <span>Nov 22, 2024</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="viewReceipt('#RCPT-2024-11C2', 'Zaid Ali', 'O+', 'Amna Bib', 'Nov 22, 2024')"
+                        style="width: 100%; margin-top: 1.5rem; background: var(--secondary); justify-content: center;">
+                        <i class="fas fa-eye"></i> View Receipt
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        // ADDED: View Receipt button handler - navigates to receipt-view.html with receipt data
+        function viewReceipt(receiptId, donorName, bloodGroup, patientName, date) {
+            // Store receipt data in localStorage for display on receipt-view page
+            const receiptData = {
+                id: receiptId,
+                donor: donorName,
+                blood: bloodGroup,
+                patient: patientName,
+                date: date
+            };
+            localStorage.setItem('current_receipt', JSON.stringify(receiptData));
+            // Navigate to receipt view page
+            window.location.href = 'receipt-view.html';
+        }
+    </script>
+</body>
+
+</html>

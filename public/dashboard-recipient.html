@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipient Dashboard - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/dark-mode.js"></script>
+    <style>
+        .cta-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            border-left: 6px solid var(--secondary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .active-requests {
+            grid-column: span 2;
+        }
+
+        .request-card {
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 1.25rem;
+            margin-top: 1.5rem;
+            position: relative;
+            background: var(--bg-light);
+        }
+
+        .urgency-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 0.35rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .urgency-high {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .progress-stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        .progress-stepper::before {
+            content: '';
+            position: absolute;
+            top: 13px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            z-index: 1;
+            border-radius: 2px;
+        }
+
+        .step-point {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--border);
+            z-index: 2;
+            transition: var(--transition);
+        }
+
+        .step-point.completed {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .step-point.active {
+            border-color: var(--secondary);
+            background: var(--secondary-light);
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+        }
+    </style>
+</head>
+
+<body class="recipient-theme">
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+        <span id="theme-icon">🌙</span>
+    </button>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo" style="text-decoration: none;">
+                <i class="fas fa-heartbeat logo-heartbeat"></i>
+                <span>BloodConnect</span>
+            </a>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard-recipient.html" class="active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="request-blood.html"><i class="fas fa-plus-circle"></i> New Request</a></li>
+                <li><a href="my-requests.html"><i class="fas fa-list-ul"></i> My Requests</a></li>
+                <li><a href="receipts-recipient.html"><i class="fas fa-file-invoice"></i> Receipts</a></li>
+                <li><a href="emergency-broadcast.html" style="color: #ef4444;"><i class="fas fa-broadcast-tower"></i>
+                        Emergency</a></li>
+                <li><a href="settings-recipient.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+            <a href="#" onclick="App.logout()"
+                style="color: #ef4444; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin-top: auto;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="cta-section">
+                <div>
+                    <h2 id="welcomeText" style="font-size: 1.75rem; font-family: 'Outfit';">Welcome!</h2>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Our Matching Engine uses Dijkstra's
+                        Algorithm to find the fastest donor route.</p>
+                </div>
+                <a href="request-blood.html" class="btn-primary"
+                    style="background: var(--secondary); box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);">
+                    Find Donor <i class="fas fa-search"></i>
+                </a>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="widget active-requests">
+                    <h3 style="font-family: 'Outfit';">Track Active Request</h3>
+                    <div class="request-card">
+                        <span class="urgency-badge urgency-high">URGENT</span>
+                        <h4 style="margin-bottom: 0.5rem;">A+ Needed for Sara Ahmed</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-hospital"></i> Shifa
+                            International | 1 Unit</p>
+
+                        <div class="progress-stepper">
+                            <div class="step-point completed"></div>
+                            <div class="step-point completed"></div>
+                            <div class="step-point active"></div>
+                            <div class="step-point"></div>
+                            <div class="step-point"></div>
+                        </div>
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-top: 0.75rem; color: var(--text-muted); font-weight: 700;">
+                            <span>REQUESTED</span>
+                            <span>MATCHED</span>
+                            <span>ACCEPTED</span>
+                            <span>TRANSIT</span>
+                            <span>COMPLETED</span>
+                        </div>
+
+                        <div
+                            style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <div
+                                    style="width: 45px; height: 45px; border-radius: 50%; background: var(--secondary-light); display: flex; align-items: center; justify-content: center; color: var(--secondary);">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 700; font-size: 0.95rem;">Ahmed Khan</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">Verified Donor (8
+                                        Donations)</div>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: var(--secondary); font-weight: 800; font-size: 1.1rem;">12 MINS</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">Est. Arrival Time</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="live-match.html" class="btn-secondary"
+                        style="margin-top: 1.5rem; width: 100%; justify-content: center; background: white;">
+                        <i class="fas fa-map-marked-alt"></i> View Live Tracking & Route
+                    </a>
+                </div>
+
+                <div class="widget">
+                    <h3 style="font-family: 'Outfit'; margin-bottom: 1.5rem;">Quick Stats</h3>
+                    <div style="display: grid; gap: 1.25rem;">
+                        <div class="card" style="padding: 1.25rem; background: var(--bg-light); border: none;">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">TOTAL REQUESTS
+                            </div>
+                            <div style="font-size: 2rem; font-weight: 800; color: var(--secondary);">3</div>
+                        </div>
+                        <div class="card" style="padding: 1.25rem; background: var(--bg-light); border: none;">
+                            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">LIVES IMPACTED
+                            </div>
+                            <div style="font-size: 2rem; font-weight: 800; color: var(--accent);">2</div>
+                        </div>
+                        <div class="card" style="padding: 1.25rem; background: var(--bg-light); border-radius: 1rem;">
+                            <h4 style="font-size: 0.9rem; margin-bottom: 0.75rem;">Support Center</h4>
+                            <button class="btn-secondary"
+                                style="width: 100%; font-size: 0.8rem; justify-content: center;">
+                                <i class="fas fa-headset"></i> Contact Helpdesk
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('blood_connect_user'));
+        if (!user) window.location.href = 'login.html';
+
+        document.getElementById('welcomeText').innerText = `Welcome, ${user.name || 'User'}!`;
+    </script>
+</body>
+
+</html>

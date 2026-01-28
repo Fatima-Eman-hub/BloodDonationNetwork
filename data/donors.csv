@@ -1,0 +1,4 @@
+id,name,age,gender,cnic,email,phone,address,city,area,bloodGroup,status,lastDonationDate,totalDonations,badgeLevel,isVerified,nextEligibleDate,locationNodeId,passwordHash
+DON-001,Arham Ali,28,Male,42101-1234567-1,arham @example.com,0300-1112223,House 123 Sector F-8,Islamabad,F-8,A+,Available,2024-09-15,8,Gold,1,2024-12-15,D1,password123
+DON-002,Eman Ali,25,Female,42101-7654321-2,Eman@example.com,0300-4445556,Apartment 45 Sector G-9,Islamabad,G-9,O+,Available,2024-10-10,12,Platinum,1,2025-01-10,D2,password123
+DON-003,Hassan Raza,32,Male,42101-9998887-3,hassan@example.com,0300-7778889,Villa 12 DHA Phase 5,Islamabad,DHA,B+,Available,2024-08-22,5,Silver,1,2024-11-22,D3,password123
