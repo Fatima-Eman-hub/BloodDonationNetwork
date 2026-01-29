@@ -6,7 +6,7 @@
 [![Frontend](https://img.shields.io/badge/Frontend-HTML%2FCSS%2FJS-yellow?style=flat-square)](.)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](.)
 
-**[🔗 View Live Demo](https://fatima-eman-hub.github.io/BloodDonationNetwork/)** | **[📊 GitHub Repository](https://github.com/Fatima-Eman-hub/BloodDonationNetwork)**
+**[🔗 View Live Demo](https://fatima-eman-hub.github.io/BloodDonationNetwork/)** | **[📊 GitHub Repository](https://github.com/Fatima-Eman-hub/BloodDonationNetwork)** | **[🚀 Live on Vercel](https://blooddonation-network.vercel.app/)**
 
 ---
 
@@ -30,12 +30,12 @@ BloodConnect is a practical learning project that implements:
 - CMake 3.10+
 - Modern web browser
 
-### Build & Run
+### Local Development
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/BloodConnect.git
-cd BloodConnect
+git clone https://github.com/Fatima-Eman-hub/BloodDonationNetwork.git
+cd BloodDonationNetwork
 
 # 2. Build the project
 mkdir build && cd build
@@ -52,6 +52,20 @@ make
 2. Register as Donor or Recipient
 3. Enter blood type and location
 4. View matching results
+
+### Deploy to Vercel
+
+```bash
+# Push to GitHub
+git push origin main
+
+# Visit https://vercel.com
+# 1. Import this GitHub repository
+# 2. Vercel will auto-detect the `public` folder as root
+# 3. Deploy!
+
+# Your site will be live at: https://blooddonation-network.vercel.app/
+```
 
 ---
 
