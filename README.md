@@ -356,9 +356,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-**Author**: [Your Name]  
-**Email**: your.email@example.com  
-**GitHub**: [@yourusername](https://github.com/yourusername)
+**Author**: Fatima Eman  
+**Email**: fatimaimaan318@gmail.com  
+**GitHub**: [@Fatima-Eman-hub](https://github.com/Fatima-Eman-hub)
 
 ---
 
